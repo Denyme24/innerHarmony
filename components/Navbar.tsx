@@ -2,12 +2,46 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 // import Image from 'next/image';
 
+interface User {
+  name: string;
+  email: string;
+}
+
 const Navbar = () => {
+  const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  // Check authentication status on mount
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+      // Decode JWT token to get user info
+      try {
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split("")
+            .map(function (c) {
+              return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+            })
+            .join("")
+        );
+        const userData = JSON.parse(jsonPayload);
+        setUser(userData);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    }
+  }, []);
 
   // Handle scroll effect for navbar
   useEffect(() => {
@@ -24,6 +58,13 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    setUser(null);
+    router.push("/");
+  };
 
   return (
     <motion.nav
@@ -64,12 +105,28 @@ const Navbar = () => {
 
         {/* Auth Buttons */}
         <div className="hidden md:flex items-center space-x-4">
-          <Link href="/login" className="btn-secondary py-1.5 px-5">
-            Login
-          </Link>
-          <Link href="/signup" className="btn-primary py-1.5 px-5">
-            Sign Up
-          </Link>
+          {isLoggedIn ? (
+            <div className="flex items-center space-x-4">
+              <span className="text-gray-700">
+                Welcome, {user?.name || "User"}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="btn-secondary py-1.5 px-5"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <>
+              <Link href="/login" className="btn-secondary py-1.5 px-5">
+                Login
+              </Link>
+              <Link href="/signup" className="btn-primary py-1.5 px-5">
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -135,20 +192,39 @@ const Navbar = () => {
               Contact
             </Link>
             <div className="flex flex-col space-y-3 pt-3">
-              <Link
-                href="/login"
-                className="btn-secondary w-full text-center border-lavender/80 hover:bg-lavender/80"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Login
-              </Link>
-              <Link
-                href="/signup"
-                className="btn-primary w-full text-center bg-lavender/80 hover:bg-lavender"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Sign Up
-              </Link>
+              {isLoggedIn ? (
+                <>
+                  <div className="text-center text-gray-700 mb-2">
+                    Welcome, {user?.name || "User"}
+                  </div>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="btn-secondary w-full text-center border-lavender/80 hover:bg-lavender/80"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="btn-secondary w-full text-center border-lavender/80 hover:bg-lavender/80"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="btn-primary w-full text-center bg-lavender/80 hover:bg-lavender"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </motion.div>
