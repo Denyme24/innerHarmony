@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 // import Image from 'next/image';
 
@@ -13,6 +13,7 @@ interface User {
 
 const Navbar = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -66,68 +67,100 @@ const Navbar = () => {
     router.push("/");
   };
 
+  const handleCommunityClick = (e: React.MouseEvent) => {
+    if (!isLoggedIn) {
+      e.preventDefault();
+      alert('Please sign in to access the community!');
+      router.push('/login');
+    } else {
+      router.push('/community');
+    }
+  };
+
+  const navLinks = [
+    { href: "/", label: "Home" },
+    { href: "/therapy", label: "Therapy" },
+    { href: "/about", label: "About" },
+    { href: "/contact", label: "Contact" },
+    { href: "/community", label: "Community", auth: true },
+  ];
+
   return (
     <motion.nav
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled
-          ? "py-3 bg-white/90 backdrop-blur-md shadow-sm"
-          : "py-6 bg-transparent"
+      className={`fixed w-full z-50 transition-all duration-300 backdrop-blur-xl bg-white/70 shadow-lg ${
+        isScrolled ? "py-3" : "py-4"
       }`}
+      style={{
+        borderBottom: "1px solid rgba(200,200,255,0.08)",
+        boxShadow: isScrolled
+          ? "0 4px 24px 0 rgba(180,180,220,0.08)"
+          : "0 2px 8px 0 rgba(180,180,220,0.04)",
+      }}
     >
       <div className="container-custom flex justify-between items-center">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-lavender to-mint flex items-center justify-center">
-            <span className="font-serif text-lavender/80 text-xl font-bold">
-              IH
-            </span>
-          </div>
-          <span className="font-serif text-xl font-semibold text-soft-black">
+        <Link href="/" className="flex items-center space-x-3 group">
+          
+          <span className="font-serif text-2xl font-bold text-soft-black tracking-tight group-hover:text-lavender transition-colors">
             InnerHarmony
           </span>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <div className="hidden md:flex space-x-8">
-          <Link href="/" className="nav-link nav-link-active">
-            Home
-          </Link>
-          <Link href="/about" className="nav-link">
-            About
-          </Link>
-          <Link href="/contact" className="nav-link">
-            Contact
-          </Link>
-          {isLoggedIn && (
-            <Link href="/community" className="nav-link">
-              Community
-            </Link>
-          )}
+        <div className="hidden md:flex space-x-8 text-lg">
+          {navLinks.map((link) => {
+            if (link.href === '/community') {
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={handleCommunityClick}
+                  className={`nav-link px-2 py-1 rounded-lg transition-colors duration-200 font-medium hover:bg-lavender/10 hover:text-lavender focus:outline-none ${
+                    pathname === link.href ? "text-lavender font-bold" : "text-gray-700"
+                  }`}
+                >
+                  {link.label}
+                </a>
+              );
+            }
+            if (link.auth && !isLoggedIn) return null;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`nav-link px-2 py-1 rounded-lg transition-colors duration-200 font-medium hover:bg-lavender/10 hover:text-lavender focus:outline-none ${
+                  pathname === link.href ? "text-lavender font-bold" : "text-gray-700"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </div>
 
-        {/* Auth Buttons */}
+        {/* Auth Buttons / Profile */}
         <div className="hidden md:flex items-center space-x-4">
           {isLoggedIn ? (
             <div className="flex items-center space-x-4">
-              <span className="text-gray-700">
-                Hello, {user?.name || "User"}
+              <span className="text-gray-700 font-medium">
+                {(user?.name && user.name.split(' ')[0]) || "User"}
               </span>
               <button
                 onClick={handleLogout}
-                className="btn-secondary py-1.5 px-5"
+                className="btn-secondary py-2 px-6 text-base font-semibold hover:bg-lavender/10 hover:text-lavender"
               >
                 Logout
               </button>
             </div>
           ) : (
             <>
-              <Link href="/login" className="btn-secondary py-1.5 px-5">
+              <Link href="/login" className="btn-secondary py-2 px-6 text-base font-semibold">
                 Login
               </Link>
-              <Link href="/signup" className="btn-primary py-1.5 px-5">
+              <Link href="/signup" className="btn-primary py-2 px-6 text-base font-semibold">
                 Sign Up
               </Link>
             </>
@@ -140,7 +173,7 @@ const Navbar = () => {
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           <svg
-            className="w-6 h-6"
+            className="w-7 h-7"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -172,74 +205,60 @@ const Navbar = () => {
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.3 }}
-          className="md:hidden bg-white shadow-lg rounded-b-2xl mt-2"
+          className="md:hidden bg-white/95 shadow-2xl rounded-b-2xl mt-2 px-4 py-6"
         >
-          <div className="flex flex-col space-y-4 p-6">
-            <Link
-              href="/"
-              className="nav-link py-2"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              className="nav-link py-2"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              About
-            </Link>
-            <Link
-              href="/contact"
-              className="nav-link py-2"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Contact
-            </Link>
-            {isLoggedIn && (
-              <Link
-                href="/community"
-                className="nav-link py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Community
-              </Link>
+          <div className="flex flex-col space-y-4">
+            {navLinks.map((link) => {
+              if (link.href === '/community') {
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={handleCommunityClick}
+                    className="nav-link text-lg py-2 px-2 rounded-lg hover:bg-lavender/10 hover:text-lavender transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                );
+              }
+              if (link.auth && !isLoggedIn) return null;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="nav-link text-lg py-2 px-2 rounded-lg hover:bg-lavender/10 hover:text-lavender transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+            <div className="border-t border-gray-200 my-2"></div>
+            {isLoggedIn ? (
+              <div className="flex items-center space-x-3 mt-2">
+                <span className="text-gray-700 font-medium">
+                  {(user?.name && user.name.split(' ')[0]) || "User"}
+                </span>
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="btn-secondary py-2 px-4 text-base font-semibold hover:bg-lavender/10 hover:text-lavender"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col space-y-2 mt-2">
+                <Link href="/login" className="btn-secondary py-2 px-4 text-base font-semibold" onClick={() => setIsMobileMenuOpen(false)}>
+                  Login
+                </Link>
+                <Link href="/signup" className="btn-primary py-2 px-4 text-base font-semibold" onClick={() => setIsMobileMenuOpen(false)}>
+                  Sign Up
+                </Link>
+              </div>
             )}
-            <div className="flex flex-col space-y-3 pt-3">
-              {isLoggedIn ? (
-                <>
-                  <div className="text-center text-gray-700 mb-2">
-                    Hello, {user?.name || "User"}
-                  </div>
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="btn-secondary w-full text-center border-lavender/80 hover:bg-lavender/80"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/login"
-                    className="btn-secondary w-full text-center border-lavender/80 hover:bg-lavender/80"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/signup"
-                    className="btn-primary w-full text-center bg-lavender/80 hover:bg-lavender"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Sign Up
-                  </Link>
-                </>
-              )}
-            </div>
           </div>
         </motion.div>
       )}

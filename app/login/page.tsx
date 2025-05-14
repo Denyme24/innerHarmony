@@ -103,7 +103,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-lavender hover:bg-lavender/80 text-white font-medium py-2.5 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50"
+              className="w-full bg-[var(--dark-lavender)] hover:bg-[var(--lavender)] hover:bg-lavender/80 text-white font-medium py-2.5 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50"
             >
               {loading ? "Logging in..." : "Log In"}
             </button>

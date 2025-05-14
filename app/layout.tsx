@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Nunito_Sans, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
-import Chatbot from "@/components/Chatbot";
 
 const nunito = Nunito_Sans({
   subsets: ["latin"],
@@ -32,7 +31,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${nunito.variable} ${cormorant.variable}`}>
         {children}
-        <Chatbot />
       </body>
     </html>
   );

@@ -6,32 +6,23 @@ import { useInView } from "react-intersection-observer";
 
 const features = [
   {
-    title: "Guided Therapy Sessions",
-    description:
-      "Personalized sessions designed specifically for women's unique mental health challenges and experiences.",
+    title: "Guided Therapy",
+    description: "Personalized sessions for women's mental health.",
     icon: "🧠",
     color: "from-lavender to-soft-lilac",
   },
+ 
   {
-    title: "AI Counseling Videos",
-    description:
-      "Access to AI-driven therapeutic content that adapts to your emotional needs and progress.",
-    icon: "🎬",
-    color: "from-sky-blue to-mint",
+    title: "Mindfulness Library",
+    description: "Meditations and exercises for daily calm.",
+    icon: "🧘‍♀️",
+    color: "from-mint to-soft-lilac",
   },
   {
-    title: "Safe Community Space",
-    description:
-      "Connect with women who understand your journey in a judgment-free, supportive environment.",
-    icon: "👭",
-    color: "from-pale-rose to-soft-lilac",
-  },
-  {
-    title: "Self-Care Tools",
-    description:
-      "Practical resources to build resilience and develop healthy emotional habits in your daily life.",
-    icon: "🌱",
-    color: "from-mint to-sky-blue",
+    title: "Progress Tracking",
+    description: "Track your journey and celebrate milestones.",
+    icon: "📈",
+    color: "from-sky-blue to-lavender",
   },
 ];
 
@@ -59,12 +50,12 @@ const Features = () => {
   };
 
   const itemVariants = {
-    hidden: { y: 50, opacity: 0 },
+    hidden: { opacity: 0, scale: 0.8 },
     visible: {
-      y: 0,
       opacity: 1,
+      scale: 1,
       transition: {
-        duration: 0.6,
+        duration: 0.5,
       },
     },
   };
@@ -72,71 +63,43 @@ const Features = () => {
   return (
     <section
       ref={ref}
-      className="py-20 bg-white/70 backdrop-blur-sm relative overflow-hidden"
+      className="py-14 bg-white/70 backdrop-blur-sm relative overflow-hidden"
     >
       {/* Decorative elements */}
       <div className="absolute top-0 right-0 w-72 h-72 bg-lavender/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
       <div className="absolute bottom-0 left-0 w-60 h-60 bg-mint/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4"></div>
 
       <div className="container-custom relative z-10">
-        <div className="text-center mb-16">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="px-4 py-1 bg-lavender/10 rounded-full text-lavender font-medium text-sm inline-block mb-4"
-          >
+        <div className="text-center mb-10">
+          <span className="px-4 py-1 bg-lavender/10 rounded-full text-lavender font-medium text-base inline-block mb-4">
             Our Offerings
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-3xl md:text-4xl font-serif font-bold mb-6"
-          >
-            Features Designed For{" "}
-            <span className="text-lavender">Your Wellbeing</span>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-gray-600 max-w-2xl mx-auto text-lg"
-          >
-            InnerHarmony provides a comprehensive approach to women&apos;s
-            mental health with tools and resources tailored to your journey.
-          </motion.p>
+          </span>
+          <h2 className="text-3xl md:text-5xl font-serif font-bold mb-6">
+            Features Designed For <span className="text-lavender">Your Wellbeing</span>
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto text-xl">
+            Tools and support for every step of your mental wellness journey.
+          </p>
         </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={controls}
-          className="grid md:grid-cols-2 xl:grid-cols-4 gap-6"
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <motion.div
+            <div
               key={index}
-              variants={itemVariants}
-              whileHover={{ y: -8, transition: { duration: 0.3 } }}
-              className="card group"
+              className="h-full min-h-[300px] p-10 bg-white rounded-3xl shadow-md shadow-gray-200 border border-gray-100 transition-all duration-300 hover:shadow-2xl flex flex-col items-center"
             >
               <div
-                className={`h-full p-8 bg-white rounded-2xl border border-gray-100 transition-all duration-300 hover:shadow-xl`}
+                className={`w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center`}
               >
-                <div
-                  className={`w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center group-hover:animate-breathe`}
-                >
-                  <span className="text-2xl">{feature.icon}</span>
-                </div>
-                <h3 className="text-xl font-semibold mb-4 font-serif">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <span className="text-4xl">{feature.icon}</span>
               </div>
-            </motion.div>
+              <h3 className="text-2xl font-bold text-gray-700 mb-4 font-serif text-center">
+                {feature.title}
+              </h3>
+              <p className="text-gray-600 text-lg text-center flex-1">{feature.description}</p>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

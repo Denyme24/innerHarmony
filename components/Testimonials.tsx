@@ -14,14 +14,6 @@ const testimonials = [
     avatar: "👩‍💼",
   },
   {
-    id: 2,
-    quote:
-      "After my pregnancy, I struggled with postpartum depression. The specialized support I received here made all the difference in my recovery journey.",
-    name: "Maya Patel",
-    position: "New Mother",
-    avatar: "👩‍👧",
-  },
-  {
     id: 3,
     quote:
       "The community aspect of InnerHarmony helped me realize I'm not alone in my struggles. Connecting with women who understand has been incredibly healing.",
@@ -78,7 +70,7 @@ const Testimonials = () => {
   return (
     <section
       ref={ref}
-      className="py-20 bg-gradient-to-br from-lavender/5 to-pale-rose/10 relative overflow-hidden"
+      className="py-20 bg-gradient-to-br from-lavender/10 to-pale-rose/10 relative overflow-hidden"
     >
       {/* Decorative elements */}
       <div className="absolute top-1/3 right-20 w-64 h-64 bg-sky-blue/10 rounded-full blur-3xl"></div>
