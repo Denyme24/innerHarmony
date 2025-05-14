@@ -101,6 +101,11 @@ const Navbar = () => {
           <Link href="/contact" className="nav-link">
             Contact
           </Link>
+          {isLoggedIn && (
+            <Link href="/community" className="nav-link">
+              Community
+            </Link>
+          )}
         </div>
 
         {/* Auth Buttons */}
@@ -108,7 +113,7 @@ const Navbar = () => {
           {isLoggedIn ? (
             <div className="flex items-center space-x-4">
               <span className="text-gray-700">
-                Welcome, {user?.name || "User"}
+                Hello, {user?.name || "User"}
               </span>
               <button
                 onClick={handleLogout}
@@ -191,11 +196,20 @@ const Navbar = () => {
             >
               Contact
             </Link>
+            {isLoggedIn && (
+              <Link
+                href="/community"
+                className="nav-link py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Community
+              </Link>
+            )}
             <div className="flex flex-col space-y-3 pt-3">
               {isLoggedIn ? (
                 <>
                   <div className="text-center text-gray-700 mb-2">
-                    Welcome, {user?.name || "User"}
+                    Hello, {user?.name || "User"}
                   </div>
                   <button
                     onClick={() => {
