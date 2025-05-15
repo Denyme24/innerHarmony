@@ -1,36 +1,27 @@
 import type { Metadata } from "next";
-import { Nunito_Sans, Cormorant_Garamond } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import Chatbot from "@/components/Chatbot";
 
-const nunito = Nunito_Sans({
-  subsets: ["latin"],
-  variable: "--font-nunito",
-  display: "swap",
-  weight: ["300", "400", "600", "700"],
-});
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  variable: "--font-cormorant",
-  display: "swap",
-  weight: ["400", "600", "700"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "InnerHarmony | Mental Well-being Platform for Women",
-  description:
-    "A safe space for women's mental health with guided therapy, AI counseling and a supportive community.",
+  title: "InnerHarmony - Women's Mental Health Support",
+  description: "A supportive platform for women's mental health and well-being",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="en">
-      <body className={`${nunito.variable} ${cormorant.variable}`}>
+      <body className={inter.className}>
+        <Navbar />
         {children}
+        <Chatbot />
       </body>
     </html>
   );
